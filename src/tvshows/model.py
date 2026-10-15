@@ -6,9 +6,14 @@ class TVShow:
     def __init__(self, name, language=None, genres=None, rating=None, premiered=None):
         self.name = name
         self.language = language
-        self.genres = genres
-        self.rating = rating
+        self.genres = genres if genres is not None else []
+        self.rating = rating if rating is not None else None
         self.premiered = premiered
+
+        if isinstance(rating, dict):
+            self.rating = rating.get("average")
+        else:
+            self.rating = None
 
         # Save and calculate year and decade from premiered ('2013-06-24')
         if self.premiered:
@@ -22,15 +27,15 @@ class TVShow:
             self.year = None
             self.decade = None
 
+def __str__(self):
+    return f"{self.name} ({self.year}) - {self.language} - {', '.join(self.genres)} - Rating: {self.rating}"
 
 def tvshow_from_dict(show_data):
     """Create a TVShow instance from a dictionary."""
-    rating_data = show_data.get("rating") or {}
-
     return TVShow(
         name=show_data.get("name"),
         language=show_data.get("language"),
         genres=show_data.get("genres"),
-        rating=rating_data.get("average"),
+        rating=show_data.get("rating"),
         premiered=show_data.get("premiered")
     )

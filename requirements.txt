@@ -1,2 +1,5 @@
 pytest
-mypyuffequests	ypes-requests
+mypy
+ruff
+requests
+types-requests
