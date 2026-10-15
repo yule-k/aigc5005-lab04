@@ -1,3 +1,5 @@
+import json
+from pathlib import Path
 from tvshows.model import TVShow, tvshow_from_dict
 
 
@@ -11,33 +13,21 @@ def test_tvshow_creation_with_defaults():
     assert show.decade is None
 
 
-def test_tvshow_with_full_data():
+def test_tvshow_with_full_data(sample_show: TVShow):
     """Test that a TVShow object is created correctly with full data."""
-    show = TVShow(
-        name="Stranger Things",
-        language="English",
-        genres=["Sci-Fi", "Drama"],
-        rating={"average": 8.7},
-        premiered="2016-07-15",
-    )
-    assert show.name == "Stranger Things"
-    assert show.language == "English"
-    assert show.genres == ["Sci-Fi", "Drama"]
-    assert show.rating == 8.7
-    assert show.year == 2016
-    assert show.decade == 2010
+    assert sample_show.name == "Stranger Things"
+    assert sample_show.language == "English"
+    assert sample_show.genres == ["Sci-Fi", "Drama"]
+    assert sample_show.rating == 8.7
+    assert sample_show.year == 2016
+    assert sample_show.decade == 2010
 
 
-def test_tvshow_from_dict():
+def test_tvshow_from_dict(sample_json_file: Path):
     """Test that a TVShow object is created correctly from a dictionary."""
-    data = {
-        "name": "The Office",
-        "language": "English",
-        "genres": ["Comedy"],
-        "rating": {"average": 8.9},
-        "premiered": "2005-03-24",
-    }
-    show = tvshow_from_dict(data)
+    raw_data = json.loads(sample_json_file.read_text(encoding="utf-8"))
+    show = tvshow_from_dict(raw_data[0])
+
     assert show.name == "The Office"
     assert show.genres == ["Comedy"]
     assert show.rating == 8.9

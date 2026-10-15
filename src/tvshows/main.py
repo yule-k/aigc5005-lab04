@@ -10,7 +10,7 @@ from tvshows.report import build_summary, write_summary
 from tvshows.sources import TVMazeSource
 
 
-def main():
+def main() -> int:
     """Main function to fetch TV show records, compute aggregations, and write a summary."""
     source = TVMazeSource(URL, TIMEOUT)
     shows = source.fetch()
@@ -26,6 +26,8 @@ def main():
 
     print(f"Read {len(shows)} records.")
     print(f"Summary written to {OUTPUT}")
+
+    return 0
 
 
 if __name__ == "__main__":
