@@ -1,8 +1,11 @@
-#fetching; only module using requests
+# fetching; only module using requests
 
 import sys
+
 import requests
+
 from .model import tvshow_from_dict
+
 
 class TVMazeSource:
     """Download TV show records from the TVMaze API and return a list of TVShow instances."""
@@ -18,10 +21,14 @@ class TVMazeSource:
             response = requests.get(self.url, timeout=self.timeout)
             response.raise_for_status()
         except (requests.ConnectionError, requests.Timeout):
-            print(f"Error: Unable to connect to {self.url}. Please check your internet connection.")
+            print(
+                f"Error: Unable to connect to {self.url}. Please check your internet connection."
+            )
             sys.exit(1)
         except requests.HTTPError as e:
-            print(f"Error: HTTP error occurred while fetching data from {self.url}: {e}")
+            print(
+                f"Error: HTTP error occurred while fetching data from {self.url}: {e}"
+            )
             sys.exit(1)
 
         raw_data = response.json()

@@ -1,13 +1,13 @@
-#thin entry point; error message
+# thin entry point; error message
 
-from tvshows.config import URL, TIMEOUT, OUTPUT
-from tvshows.sources import TVMazeSource
 from tvshows.aggregations import (
-    GenreCount,
     AverageRatingByLanguage,
+    GenreCount,
     ShowsPerDecade,
 )
+from tvshows.config import OUTPUT, TIMEOUT, URL
 from tvshows.report import build_summary, write_summary
+from tvshows.sources import TVMazeSource
 
 
 def main():
@@ -29,5 +29,5 @@ def main():
 
 
 if __name__ == "__main__":
-    #Run the main function if this script is executed directly.
+    # Run the main function if this script is executed directly.
     main()

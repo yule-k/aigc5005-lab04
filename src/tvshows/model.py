@@ -1,4 +1,5 @@
-#the record class
+# the record class
+
 
 class TVShow:
     """A single TV Show record."""
@@ -27,8 +28,10 @@ class TVShow:
             self.year = None
             self.decade = None
 
+
 def __str__(self):
     return f"{self.name} ({self.year}) - {self.language} - {', '.join(self.genres)} - Rating: {self.rating}"
+
 
 def tvshow_from_dict(show_data):
     """Create a TVShow instance from a dictionary."""
@@ -37,5 +40,5 @@ def tvshow_from_dict(show_data):
         language=show_data.get("language"),
         genres=show_data.get("genres"),
         rating=show_data.get("rating"),
-        premiered=show_data.get("premiered")
+        premiered=show_data.get("premiered"),
     )

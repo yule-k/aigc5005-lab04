@@ -1,8 +1,9 @@
 import unittest
+
 from tvshows.model import TVShow
 
-class TestTVShow(unittest.TestCase):
 
+class TestTVShow(unittest.TestCase):
     def test_year_and_decade(self):
         show = TVShow("Test", premiered="2011-04-17")
         self.assertEqual(show.year, 2011)
