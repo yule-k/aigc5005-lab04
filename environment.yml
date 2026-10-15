@@ -1,0 +1,6 @@
+name: tvshows
+channels:
+- defaults
+dependencies:
+- python=3.13.15
+- pip

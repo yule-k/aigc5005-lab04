@@ -1,0 +1,14 @@
+# pyproject.toml
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tvshows"
+version = "0.1.0"
+dependencies = [
+"requests==2.32.3",
+]
+[tool.setuptools.packages.find]
+where = ["src"]
