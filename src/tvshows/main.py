@@ -1,35 +1,44 @@
 # thin entry point; error message
+import logging
+import sys
 
 from tvshows.aggregations import (
     AverageRatingByLanguage,
     GenreCount,
     ShowsPerDecade,
 )
-from tvshows.config import OUTPUT, TIMEOUT, URL
+from tvshows.config import load_settings
 from tvshows.report import build_summary, write_summary
 from tvshows.sources import TVMazeSource
 
+logger = logging.getLogger(__name__)
 
-def main() -> int:
+def main(argv: list[str] | None = None) -> int:
     """Main function to fetch TV show records, compute aggregations, and write a summary."""
-    source = TVMazeSource(URL, TIMEOUT)
-    shows = source.fetch()
+    try:
+        settings = load_settings()
+        source = TVMazeSource(settings.url, settings.timeout)
+        shows = source.fetch()
 
-    aggregations = [
-        GenreCount(),
-        AverageRatingByLanguage(),
-        ShowsPerDecade(),
-    ]
+        aggregations = [
+            GenreCount(),
+            AverageRatingByLanguage(),
+            ShowsPerDecade(),
+        ]
+        summary = build_summary(shows, settings.url, aggregations)
+        output_path = settings.output_dir / "summary.json"
+        settings.output_dir.mkdir(parents=True, exist_ok=True)
+        write_summary(summary, output_path)
 
-    summary = build_summary(shows, URL, aggregations)
-    write_summary(summary, OUTPUT)
+        logger.info("Read %d records.", len(shows))
+        logger.info("Summary written to %s", settings.output_dir)
 
-    print(f"Read {len(shows)} records.")
-    print(f"Summary written to {OUTPUT}")
-
-    return 0
-
+        return 0
+    
+    except Exception as e:
+        logger.error("An error occurred during execution: %s", e)
+        print(f"Error: {e}", file=sys.stderr)
+        return 1
 
 if __name__ == "__main__":
-    # Run the main function if this script is executed directly.
-    main()
+    sys.exit(main())

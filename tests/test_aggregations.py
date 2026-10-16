@@ -1,4 +1,5 @@
 import pytest
+
 from tvshows.aggregations import (
     AverageRatingByLanguage,
     GenreCount,

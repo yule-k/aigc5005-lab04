@@ -1,5 +1,6 @@
 import json
 from pathlib import Path
+
 from tvshows.model import TVShow, tvshow_from_dict
 
 

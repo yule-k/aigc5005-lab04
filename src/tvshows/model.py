@@ -1,4 +1,5 @@
 # the record class
+from tvshows.errors import DataError
 
 
 class TVShow:
@@ -35,10 +36,18 @@ def __str__(self):
 
 def tvshow_from_dict(show_data):
     """Create a TVShow instance from a dictionary."""
-    return TVShow(
-        name=show_data.get("name"),
-        language=show_data.get("language"),
-        genres=show_data.get("genres"),
-        rating=show_data.get("rating"),
-        premiered=show_data.get("premiered"),
-    )
+    try:
+        name = show_data.get("name")
+        return TVShow(
+            name=name,
+            language=show_data.get("language"),
+            genres=show_data.get("genres"),
+            rating=show_data.get("rating"),
+            premiered=show_data.get("premiered"),
+        )
+    except KeyError as error:
+        raise DataError(
+            f"There is missing data that is required.: {error}"
+        ) from KeyError
+    except Exception as error:
+        raise DataError(f"Error ocurred during fetching data: {error}") from error
