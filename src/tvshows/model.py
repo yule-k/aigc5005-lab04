@@ -5,17 +5,28 @@ from tvshows.errors import DataError
 class TVShow:
     """A single TV Show record."""
 
-    def __init__(self, name, language=None, genres=None, rating=None, premiered=None):
+    def __init__(
+        self,
+        name: str,
+        language: str | None = None,
+        genres: list[str] | None = None,
+        rating: dict | None = None,
+        premiered: str | None = None,
+    ) -> None:
+
         self.name = name
         self.language = language
         self.genres = genres if genres is not None else []
-        self.rating = rating if rating is not None else None
+        self.rating: float | None = None
         self.premiered = premiered
 
         if isinstance(rating, dict):
             self.rating = rating.get("average")
         else:
             self.rating = None
+
+        self.year: int | None = None
+        self.decade: int | None = None
 
         # Save and calculate year and decade from premiered ('2013-06-24')
         if self.premiered:
@@ -37,7 +48,7 @@ class TVShow:
         )
 
 
-def tvshow_from_dict(show_data):
+def tvshow_from_dict(show_data: dict) -> TVShow:
     """Create a TVShow instance from a dictionary."""
     try:
         name = show_data["name"]

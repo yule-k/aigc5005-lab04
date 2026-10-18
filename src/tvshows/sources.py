@@ -4,7 +4,7 @@ import logging
 import requests
 
 from tvshows.errors import DataError, SourceError
-from tvshows.model import tvshow_from_dict
+from tvshows.model import TVShow, tvshow_from_dict
 
 logger = logging.getLogger(__name__)
 
@@ -12,12 +12,12 @@ logger = logging.getLogger(__name__)
 class TVMazeSource:
     """Download TV show records and return"""
 
-    def __init__(self, url, timeout=10):
+    def __init__(self, url: str, timeout: float = 10) -> None:
         """Initialize the TVMazeSource with a URL and timeout."""
         self.url = url
         self.timeout = timeout
 
-    def fetch(self) -> list[dict]:
+    def fetch(self) -> list[TVShow]:
         """Fetch TV show records from the API and return."""
         try:
             response = requests.get(self.url, timeout=self.timeout)
@@ -37,7 +37,7 @@ class TVMazeSource:
             raise DataError(f"Expected a list of shows from {self.url}.")
         logger.debug("Received %d records from %s", len(raw_data), self.url)
 
-        shows = []
+        shows: list[TVShow] = []
         for show_data in raw_data:
             show = tvshow_from_dict(show_data)
             shows.append(show)

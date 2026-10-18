@@ -1,13 +1,17 @@
 # base class and subclasses
 import logging
 
+from tvshows.model import TVShow
+
 logger = logging.getLogger(__name__)
 
 
 class Aggregation:
     """Base class for aggregations."""
 
-    def compute(self, shows):
+    name: str = ""
+
+    def compute(self, shows: list[TVShow]) -> dict:
         raise NotImplementedError
 
 
@@ -16,8 +20,8 @@ class GenreCount(Aggregation):
 
     name = "count by genres"
 
-    def compute(self, shows):
-        genre_counts = {}
+    def compute(self, shows: list[TVShow]) -> dict[str, int]:
+        genre_counts: dict[str, int] = {}
 
         for show in shows:
             for genre in show.genres:
@@ -30,8 +34,8 @@ class AverageRatingByLanguage(Aggregation):
 
     name = "average ratings by language"
 
-    def compute(self, shows):
-        language_basket = {}
+    def compute(self, shows: list[TVShow]) -> dict[str | None, float]:
+        language_basket: dict[str | None, tuple[float, int]] = {}
 
         for show in shows:
             language = show.language
@@ -57,8 +61,8 @@ class ShowsPerDecade(Aggregation):
 
     name = "shows premiered per decade"
 
-    def compute(self, shows):
-        decade_counts = {}
+    def compute(self, shows: list[TVShow]) -> dict[int, int]:
+        decade_counts: dict[int, int] = {}
 
         for show in shows:
             decade = show.decade
