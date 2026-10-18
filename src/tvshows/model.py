@@ -29,28 +29,24 @@ class TVShow:
             self.year = None
             self.decade = None
 
-
-def __str__(self) -> str:
+    def __str__(self) -> str:
         genres = ", ".join(self.genres)
         return (
             f"{self.name} ({self.year}) - {self.language} - "
             f"{genres} - Rating: {self.rating}"
         )
 
+
 def tvshow_from_dict(show_data):
     """Create a TVShow instance from a dictionary."""
     try:
-        name = show_data.get("name")
-        return TVShow(
-            name=name,
-            language=show_data.get("language"),
-            genres=show_data.get("genres"),
-            rating=show_data.get("rating"),
-            premiered=show_data.get("premiered"),
-        )
-    except KeyError as error:
-        raise DataError(
-            f"There is missing data that is required.: {error}"
-        ) from KeyError
-    except Exception as error:
-        raise DataError(f"Error ocurred during fetching data: {error}") from error
+        name = show_data["name"]
+    except (KeyError, TypeError) as error:
+        raise DataError(f"There is missing data that is required.: {error}") from error
+    return TVShow(
+        name=name,
+        language=show_data.get("language"),
+        genres=show_data.get("genres"),
+        rating=show_data.get("rating"),
+        premiered=show_data.get("premiered"),
+    )

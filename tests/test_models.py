@@ -1,6 +1,9 @@
 import json
 from pathlib import Path
 
+import pytest
+
+from tvshows.errors import DataError
 from tvshows.model import TVShow, tvshow_from_dict
 
 
@@ -34,3 +37,9 @@ def test_tvshow_from_dict(sample_json_file: Path):
     assert show.rating == 8.9
     assert show.year == 2005
     assert show.decade == 2000
+
+
+def test_tvshow_from_dict_without_name():
+    """Test that a record without a name raises DataError."""
+    with pytest.raises(DataError, match="missing data"):
+        tvshow_from_dict({"genres": ["Drama"]})

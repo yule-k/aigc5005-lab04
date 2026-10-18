@@ -2,6 +2,7 @@ import pytest
 import requests
 
 from tvshows.sources import TVMazeSource
+from tvshows.errors import DataError, SourceError
 
 
 def test_tvmaze_source_connection_error(monkeypatch) -> None:
@@ -17,11 +18,8 @@ def test_tvmaze_source_connection_error(monkeypatch) -> None:
     # 3. Verify whether SystemExit(1) occurs.
     source = TVMazeSource(url="https://api.tvmaze.com/shows", timeout=5)
 
-    with pytest.raises(SystemExit) as exc_info:
+    with pytest.raises(SourceError, match="Unable to reach"):
         source.fetch()
-
-    # Check if the exit code is 1.
-    assert exc_info.value.code == 1
 
 
 def test_tvmaze_source_http_error(monkeypatch) -> None:
@@ -38,7 +36,25 @@ def test_tvmaze_source_http_error(monkeypatch) -> None:
 
     source = TVMazeSource(url="https://api.tvmaze.com/shows", timeout=5)
 
-    with pytest.raises(SystemExit) as exc_info:
+    with pytest.raises(SourceError, match="HTTP error"):
         source.fetch()
 
-    assert exc_info.value.code == 1
+def test_tvmaze_source_bad_data(monkeypatch) -> None:
+    """Test that a response that is not a list raises DataError."""
+
+    class FakeResponse:
+        def raise_for_status(self):
+            pass
+
+        def json(self):
+            return {"not": "a list"}
+
+    def fake_get(*args, **kwargs):
+        return FakeResponse()
+
+    monkeypatch.setattr(requests, "get", fake_get)
+
+    source = TVMazeSource(url="https://api.tvmaze.com/shows", timeout=5)
+
+    with pytest.raises(DataError, match="Expected a list"):
+        source.fetch()
