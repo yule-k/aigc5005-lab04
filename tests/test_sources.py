@@ -5,7 +5,7 @@ from tvshows.sources import TVMazeSource
 
 
 def test_tvmaze_source_connection_error(monkeypatch) -> None:
-    """Test that TVMazeSource handles connection errors correctly and exits with sys.exit(1)."""
+    """Test that TVMazeSource handles connection errors correctly."""
 
     # 1. Define a dummy get function (raises ConnectionError)
     def fake_get(*args, **kwargs):
@@ -14,7 +14,7 @@ def test_tvmaze_source_connection_error(monkeypatch) -> None:
     # 2. Replace requests.get with a mock function.
     monkeypatch.setattr(requests, "get", fake_get)
 
-    # 3. Verify whether SystemExit(1) occurs when creating a TVMazeSource instance and executing fetch.
+    # 3. Verify whether SystemExit(1) occurs.
     source = TVMazeSource(url="https://api.tvmaze.com/shows", timeout=5)
 
     with pytest.raises(SystemExit) as exc_info:
@@ -25,7 +25,7 @@ def test_tvmaze_source_connection_error(monkeypatch) -> None:
 
 
 def test_tvmaze_source_http_error(monkeypatch) -> None:
-    """Test that TVMazeSource handles HTTP errors correctly and exits with sys.exit(1)."""
+    """Test that TVMazeSource handles HTTP errors correctly."""
 
     class FakeResponse:
         def raise_for_status(self):

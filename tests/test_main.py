@@ -4,14 +4,14 @@ from tvshows.main import main
 
 
 def test_main_success(tmp_path: Path, monkeypatch) -> None:
-    """Test that the main function runs successfully and returns 0 when everything works as expected."""
+    """Test that the main function runs successfully and returns 0."""
 
     class FakeSource:
         def __init__(self, url, timeout):
             pass
 
         def fetch(self):
-            # This fake fetch method returns a list of TVShow objects for testing purposes.
+            # This fake fetch method returns a list of TVShow objects.
             from tvshows.model import TVShow
 
             return [
@@ -33,7 +33,7 @@ def test_main_success(tmp_path: Path, monkeypatch) -> None:
 
 
 def test_main_failure_exits_cleanly(monkeypatch, capsys) -> None:
-    """Test that the main function prints an error message and returns 1 when a failure occurs."""
+    """Test that the main function prints an error message and returns 1."""
 
     # 1. monkeypatch the TVMazeSource.fetch method to raise an exception
     def fake_fetch_error(*args, **kwargs):

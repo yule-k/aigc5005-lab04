@@ -30,9 +30,12 @@ class TVShow:
             self.decade = None
 
 
-def __str__(self):
-    return f"{self.name} ({self.year}) - {self.language} - {', '.join(self.genres)} - Rating: {self.rating}"
-
+def __str__(self) -> str:
+        genres = ", ".join(self.genres)
+        return (
+            f"{self.name} ({self.year}) - {self.language} - "
+            f"{genres} - Rating: {self.rating}"
+        )
 
 def tvshow_from_dict(show_data):
     """Create a TVShow instance from a dictionary."""

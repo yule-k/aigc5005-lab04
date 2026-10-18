@@ -5,7 +5,7 @@ from tvshows.model import TVShow, tvshow_from_dict
 
 
 def test_tvshow_creation_with_defaults():
-    """Test that a TVShow object is created correctly with default values when optional fields are missing."""
+    """Test that a TVShow object is created correctly."""
     show = TVShow(name="Breaking Bad")
     assert show.name == "Breaking Bad"
     assert show.genres == []  # Missing genres should default to an empty list

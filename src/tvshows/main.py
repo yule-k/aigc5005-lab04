@@ -13,8 +13,9 @@ from tvshows.sources import TVMazeSource
 
 logger = logging.getLogger(__name__)
 
+
 def main(argv: list[str] | None = None) -> int:
-    """Main function to fetch TV show records, compute aggregations, and write a summary."""
+    """Main function to records, compute, and write a summary."""
     try:
         settings = load_settings()
         source = TVMazeSource(settings.url, settings.timeout)
@@ -34,11 +35,12 @@ def main(argv: list[str] | None = None) -> int:
         logger.info("Summary written to %s", settings.output_dir)
 
         return 0
-    
+
     except Exception as e:
         logger.error("An error occurred during execution: %s", e)
         print(f"Error: {e}", file=sys.stderr)
         return 1
+
 
 if __name__ == "__main__":
     sys.exit(main())
