@@ -11,3 +11,8 @@ env/
 .vscode/
 .idea/
 .DS_Store
+
+.env
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
