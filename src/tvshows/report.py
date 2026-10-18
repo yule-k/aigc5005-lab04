@@ -23,9 +23,7 @@ def build_summary(
     summary = {
         "source_URL": source_url,
         "records_processed": len(shows),
-        "featured_shows": get_featured_shows(
-            shows, seed, sample_size
-        ),  # 전달받은 seed와 sample_size 사용!
+        "featured_shows": get_featured_shows(shows, seed, sample_size),
     }
 
     for aggregation in aggregations:

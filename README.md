@@ -1,64 +1,69 @@
-## TV Shows Summary
-This package downloads TV show records from the TVMaze public API and summarizes them by genre, average rating by language, and premiere decade.
-
-The project refactors the original Lab 02 script into a Python package with separate modules for data models, data fetching, aggregations, reporting, and configuration.
-
-## Data source
-The program uses the TVMaze public API:
-https://api.tvmaze.com/shows?page=0
-The API returns roughly 240 TV show records.
+## TV Shows
+A hardened Python package that fetches TV show data from the TVMaze API, processes and aggregates records (genre counts, ratings by language, shows per decade), and outputs reproducible summaries with deterministic random sampling.
 
 ## Setup
-Create the Conda environment:
 conda env create -f environment.yml
+conda activate tvshows
 pip install -r requirements.txt
+pip install -e .
 
 ## Run
-python main.py
+python -m tvshows.main
+python -m tvshows.main --config config/tvshows.toml
 
-# Test
-python -m unittest discover -s tests
+## Check it
+python -m ruff format --check .
+python -m ruff check .
+python -m mypy src
+python -m pytest
 
-## Layout
-`config.py` Stores shared settings such as the TVMaze source URL, request timeout, and output path.
+## Settings
+url: The source API endpoint URL for fetching TV show records.
 
-`model.py` Contains the TVShow class, which represents one TV show record and cleans or prepares values such as language, rating, year, and decade.
+timeout: Request timeout duration in seconds.
 
-`sources.py` Contains the class responsible for downloading data from the TVMaze API and converting raw dictionaries into TVShow objects. This is the only module that imports requests.
+output_dir: Directory path where summary.json and run_info.json are saved.
 
-`aggregations.py` Contains the Aggregation base class and the aggregation subclasses that summarize TV show data.
+seed: Random seed number ensuring deterministic and reproducible show sampling.
 
-`report.py` Builds the final summary dictionary from the aggregation results and writes it to a JSON file.
+sample_size: The number of featured TV shows randomly selected for the summary.
 
-`main.py` Acts as the entry point and connects the source, aggregations, and report-writing logic.
+log_level: Logging verbosity level (e.g., INFO, DEBUG).
 
-## What moved where
-tvmaze() → TVMazeSource.fetch() in `sources.py`
+## Errors and exit codes
+| Error Class | When it is raised | What the user sees / Messages |
+| :--- | :--- | :--- |
+| `ConfigError` | When the TOML settings file is missing, unreadable, or invalid. | • `Settings file {config_path} does not exist.`<br>• `Settings file {config_path} is invalid TOML.`<br>• `Settings file {config_path} is missing: {missing}` |
+| `SourceError` | When network requests fail or the API connection times out. | • `HTTP error while fetching data from {self.url}`<br>• `Unable to reach {self.url}` |
+| `DataError` | When downloaded data shape is unexpected or required fields are missing. | • `There is missing data that is required.: {error}`<br>• `{self.url} did not return valid JSON.`<br>• `Expected a list of shows from {self.url}.` |
 
+* **Exit code 0**: Successful execution. Summaries and `run_info.json` were successfully generated.
+* **Exit code 1**: Expected failure. An error occurred, it was logged via the logger, and a single clean error message beginning with `Error:` was printed to standard error (`stderr`).
 
-number_genres() → GenreCount.compute() in `aggregations.py`
+## Reproducing a run
+Seed location: The random seed is defined in config/tvshows.toml.
 
+Run info records: run_info.json records the exact configuration settings used, the Python version, and the pinned versions of pytest, mypy, and ruff.
 
-average_rating_by_language() → AverageRatingByLanguage.compute() in `aggregations.py`
+Reproduction steps: To get the exact same featured_shows list, another user needs the same TOML configuration file containing the identical seed and sample_size values, running on the same dataset source.
 
+## What the tests cover
+The test suite protects the core behavior of the package, including:
 
-shows_per_decade() → ShowsPerDecade.compute() in `aggregations.py`
+TV show record creation, parsing from dictionaries, and handling missing data (such as missing genres or ratings).
 
+Aggregation correctness using hand-made records.
 
-Summary + JSON writing → `report.py`
+Exception handling at boundaries (pytest.raises with match arguments).
 
-## Design choices
-`TVShow` represents one cleaned TV show record.
-  
-`TVMazeSource` handles downloading data and converts raw dictionaries into `TVShow` objects.
+Deterministic random sampling via seeds (get_featured_shows).
 
+File handling and output generation using tmp_path and conftest.py fixtures.
 
-`Aggregation` is the base class for the summary calculations.
+Entry point execution, exit codes, and error printing for failed runs.
 
-`GenreCount`, `AverageRatingByLanguage`, and `ShowsPerDecade` inherit from it and override `compute()`.
+What was chosen not to test: Live network connectivity against the real TVMaze API, as tests must remain independent of external network states and internet availability.
 
-
-To add a new aggregation, create another subclass of `Aggregation` and define its own `compute()` method.
 
 ## Known limitations
-Although this program analyzed only the records from the first page for the assignment, it could be developed into an analysis tool that utilizes the full dataset and data visualization to boost TVmaze's conversion rates.
+The package processes the initial page of TV shows from the TVMaze API and relies on the stability of the external public endpoint.

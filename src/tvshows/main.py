@@ -1,6 +1,7 @@
-# thin entry point; error message
+import argparse
 import logging
 import sys
+from pathlib import Path
 
 from tvshows.aggregations import (
     AverageRatingByLanguage,
@@ -21,10 +22,21 @@ logger = logging.getLogger(__name__)
 
 def main(argv: list[str] | None = None) -> int:
     """Main function to records, compute, and write a summary."""
+
+    parser = argparse.ArgumentParser(description="Process TV show summaries.")
+    parser.add_argument(
+        "--config",
+        type=Path,
+        default=Path("config/tvshows.toml"),
+        help="Path to the TOML configuration file.",
+    )
+    args = parser.parse_args(argv)
+
     configure_logging("INFO")
     try:
-        settings = load_settings()
+        settings = load_settings(args.config)
         logging.getLogger().setLevel(settings.log_level)
+
         source = TVMazeSource(settings.url, settings.timeout)
         shows = source.fetch()
 
