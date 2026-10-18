@@ -4,6 +4,8 @@ from pathlib import Path
 
 from tvshows.errors import ConfigError
 
+REQUIRED_KEYS = ["url", "timeout", "output_dir", "seed", "sample_size", "log_level"]
+
 
 @dataclass(frozen=True)
 class Settings:
@@ -28,12 +30,17 @@ def load_settings(path: Path | str = "config/tvshows.toml") -> Settings:
     except (tomllib.TOMLDecodeError, ValueError) as error:
         raise ConfigError(f"Settings file {config_path} is invalid TOML.") from error
 
-    # Extracts values ​​from TOML data, creates a Settings object, and returns it.
+    # Every setting must be in the file; a missing one is an error, not a default.
+    missing = [key for key in REQUIRED_KEYS if key not in raw]
+    if missing:
+        raise ConfigError(f"Settings file {config_path} is missing: {missing}")
+
+    # Extracts values from TOML data, creates a Settings object, and returns it.
     return Settings(
-        url=raw.get("url", "https://api.tvmaze.com/shows?page=0"),
-        timeout=raw.get("timeout", 10),
-        output_dir=Path(raw.get("output_dir", "data/processed")),
-        seed=raw.get("seed", 42),
-        sample_size=raw.get("sample_size", 3),
-        log_level=raw.get("logging", {}).get("level", "INFO"),
+        url=raw["url"],
+        timeout=raw["timeout"],
+        output_dir=Path(raw["output_dir"]),
+        seed=raw["seed"],
+        sample_size=raw["sample_size"],
+        log_level=raw["log_level"],
     )

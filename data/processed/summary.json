@@ -1,6 +1,47 @@
 {
   "source_URL": "https://api.tvmaze.com/shows?page=0",
   "records_processed": 240,
+  "featured_shows": [
+    {
+      "name": "How I Met Your Mother",
+      "language": "English",
+      "genres": [
+        "Drama",
+        "Comedy",
+        "Romance"
+      ],
+      "rating": 7.8,
+      "premiered": "2005-09-19",
+      "year": 2005,
+      "decade": 2000
+    },
+    {
+      "name": "American Horror Story",
+      "language": "English",
+      "genres": [
+        "Drama",
+        "Horror",
+        "Thriller"
+      ],
+      "rating": 7.4,
+      "premiered": "2011-10-05",
+      "year": 2011,
+      "decade": 2010
+    },
+    {
+      "name": "Homeland",
+      "language": "English",
+      "genres": [
+        "Drama",
+        "Thriller",
+        "Espionage"
+      ],
+      "rating": 8.2,
+      "premiered": "2011-10-02",
+      "year": 2011,
+      "decade": 2010
+    }
+  ],
   "count by genres": {
     "Drama": 154,
     "Science-Fiction": 39,
