@@ -1,4 +1,7 @@
 # base class and subclasses
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class Aggregation:
@@ -35,6 +38,7 @@ class AverageRatingByLanguage(Aggregation):
             rating = show.rating
 
             if rating is None:
+                logger.warning("Skipping %s in ratings: no rating", show.name)
                 continue
 
             rating_sum, show_count = language_basket.get(language, (0, 0))
@@ -60,6 +64,7 @@ class ShowsPerDecade(Aggregation):
             decade = show.decade
 
             if decade is None:
+                logger.warning("Skipping %s in decades: no premiere date", show.name)
                 continue
 
             decade_counts[decade] = decade_counts.get(decade, 0) + 1

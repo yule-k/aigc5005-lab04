@@ -1,8 +1,8 @@
 import pytest
 import requests
 
-from tvshows.sources import TVMazeSource
 from tvshows.errors import DataError, SourceError
+from tvshows.sources import TVMazeSource
 
 
 def test_tvmaze_source_connection_error(monkeypatch) -> None:
@@ -38,6 +38,7 @@ def test_tvmaze_source_http_error(monkeypatch) -> None:
 
     with pytest.raises(SourceError, match="HTTP error"):
         source.fetch()
+
 
 def test_tvmaze_source_bad_data(monkeypatch) -> None:
     """Test that a response that is not a list raises DataError."""

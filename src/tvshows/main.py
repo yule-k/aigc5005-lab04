@@ -8,6 +8,7 @@ from tvshows.aggregations import (
     ShowsPerDecade,
 )
 from tvshows.config import load_settings
+from tvshows.logging_setup import configure_logging
 from tvshows.report import build_summary, write_summary
 from tvshows.sources import TVMazeSource
 
@@ -16,6 +17,7 @@ logger = logging.getLogger(__name__)
 
 def main(argv: list[str] | None = None) -> int:
     """Main function to records, compute, and write a summary."""
+    configure_logging("INFO")
     try:
         settings = load_settings()
         source = TVMazeSource(settings.url, settings.timeout)
